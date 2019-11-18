@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Get Updates</title>
+    <style type="text/css">
+        #room-name-submit{
+            width:30%;
+            padding: 12px 20px;
+            background-color: #3CBC8D;
+            color: white;
+        }
+        
+        #room-name-input{
+            padding: 12px 20px;
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <br><br>
+    <center>
+        <h1>Enter The Topic You Want To get Real Time Updates ..</h1><br/><br>
+        <input id="room-name-input" type="text" size="100"/><br/><br>
+        <input id="room-name-submit" type="button" value="Get Current Updates"/>
+    </center>
+    
+
+    <script>
+        document.querySelector('#room-name-input').focus();
+        document.querySelector('#room-name-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#room-name-submit').click();
+            }
+        };
+
+        document.querySelector('#room-name-submit').onclick = function(e) {
+            var roomName = document.querySelector('#room-name-input').value;
+            window.location.pathname = '/chat/' + roomName + '/';
+        };
+    </script>
+</body>
+</html>

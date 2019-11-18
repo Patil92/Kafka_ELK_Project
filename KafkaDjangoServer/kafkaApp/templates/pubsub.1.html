@@ -1,0 +1,75 @@
+<html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    
+    <center><div><h1>REAL TIME NEWS UPDATES</h1></div></center>
+ 
+     <center>
+         <select style="width:200px;height:30px" id="sel1">
+            <option name="TECH" value="TECH">TECHNOLOGY</option>
+            <option name="FINANCE" value="FINANCE">FINANCE</option>
+            <option name="POLITICS" value="POLITICS">POLITICS</option>
+            <option name="SPORTS" value="SPORTS">SPORTS</option>
+     </select>
+     <br><br>
+     <button id="button">GET UPDATES</button>
+     </center>
+     
+     
+     <br><br>
+    
+    <div id="updates">
+        <ul id="append_updates"></ul>
+    </div>
+    <div class="wrapper">
+
+        <script>
+            
+                
+            $(document).ready(function(){
+                
+                var curr,prev;
+                var firstcall=true;
+                
+                var chatSocket = new WebSocket(
+                    'ws://' + window.location.host +
+                    '/ws/pubsub/');
+                
+                $('#button').on('click',function(){
+                    var news=$('#sel1').val()
+                
+                    console.log(news)
+                    
+                    chatSocket.send(JSON.stringify({
+                        'message': news
+                    }));
+                    
+                });
+                
+                chatSocket.onmessage = function(e) {
+                    var data = JSON.parse(e.data);
+                    var val = data['message'];
+                        
+                    $("#append_updates").append('<li>'+val+'</li>');
+                    
+                 console.log(val);
+            };
+        
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+                
+             
+        });
+            
+    
+            
+        </script>
+    </div>
+    </body>
+</html>

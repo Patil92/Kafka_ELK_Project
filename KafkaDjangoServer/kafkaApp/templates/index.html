@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Patil</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+</head>
+<body>
+    
+    <center><h1>Welcome To Patil's World...</h1></center>
+    
+    <br>
+        
+    <center><div class="refresh">
+        <h2>GeoLocation</h2>
+        <h3>Latitude :<span id="latitude"></span></h3>
+        <h3>Longitude :<span id="longitude"></span></h3>
+    </div></center>
+
+    <br><br>
+
+    
+    <center><div id="mapid" style="width: 600px; height: 400px;"></div></center>
+    
+    <script>
+    
+    //var marker = L.marker([12.313756187376198,76.61349177360535]).addTo(mymap);
+    
+    </script>
+    
+    <br><br>
+    <script>
+        
+        points=[];
+    
+    var mymap = L.map('mapid').setView([
+          12.313756187376198,76.61349177360535], 25);
+    
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=C2AKGM7X6jNyyjCtGfn8', {
+    	attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank"></a><a href="https://www.openstreetmap.org/copyright" target="_blank"></a>',
+    	maxZoom: 18,
+    	id: 'mapbox.streets'
+    }).addTo(mymap);
+    
+         var point = L.marker([12.313756187376198,76.61349177360535]).addTo(mymap);
+         points.push(point);
+         
+        
+        function refresh()
+        {
+            $.ajax({
+                    url: '/rand',
+                    type: "GET",
+                    cache:false,
+                    dataType: "json",
+                    success: function (data) {
+                      //alert(data.status)
+                      
+                      console.log(data.inc);
+                      $(".refresh #latitude").text(data.lat);
+                      $(".refresh #longitude").text(data.long);
+                      //$(".refresh #getRand").load(location.href + ".refresh #getRand");
+                      console.log(data.lat,data.long);
+                      
+                      //$('#showmap').html="<div id="mapid" style="width: 600px; height: 400px;"></div>";
+                      for (i=0;i<points.length;i++) {
+                          mymap.removeLayer(points[i]);
+                      }
+                      
+                      var point = L.marker([data.lat,data.long]).addTo(mymap).bindPopup("Patil").openPopup();
+                      points.push(point);
+
+                     //var marker = L.marker([data.lat,data.long]).addTo(mymap);
+                        
+                        // marker1=L.marker([data.lat,data.long]).addTo(mymap);
+                        // mapMarker.push(marker1);
+    
+                    }
+                  });
+        }
+        
+        //refresh();
+       setInterval(refresh,3000);
+
+    </script>
+        
+
+    
+</body>
+</html>

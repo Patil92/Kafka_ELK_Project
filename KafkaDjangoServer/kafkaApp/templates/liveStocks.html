@@ -1,0 +1,127 @@
+<html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    
+    <center><div><h1>Real Time Stock Price Analysis</h1></div></center>
+ 
+     <center>
+         <select style="width:200px;height:30px" id="sel1">
+            <option name="MSFT" value="MSFT">MSFT</option>
+            <option name="GOOGL" value="GOOGL">GOOGL</option>
+            <option name="AMZN" value="AMZN">AMZN</option>
+            <option name="AAPL" value="AAPL">AAPL</option>
+     </select>
+     <br><br>
+     <button id="button">Show Live Status</button>
+     </center>
+     
+     
+     <br><br>
+    
+    <div class="wrapper">
+        <div id="chart"></div>
+        <script>
+            
+                
+            $(document).ready(function(){
+                
+                var curr,prev;
+                var firstcall=true;
+                
+                var chatSocket = new WebSocket(
+                    'ws://' + window.location.host +
+                    '/ws/consume/');
+                
+                $('#button').on('click',function(){
+                    var cmp=$('#sel1').val()
+                
+                    console.log(cmp)
+                    
+                    chatSocket.send(JSON.stringify({
+                        'message': cmp
+                    }));
+                    
+                });
+                
+                var roomName="Patil";
+    
+            
+        
+            var cnt = 0;
+            
+            Plotly.plot('chart',[{
+                y:[0],
+                type:'line'
+            }]);
+            
+            chatSocket.onmessage = function(e) {
+                var data = JSON.parse(e.data);
+                var val = data['message'];
+                
+                Plotly.extendTraces('chart',{ y:[[val]]}, [0]);
+                cnt++;
+                if(cnt > 500) {
+                    Plotly.relayout('chart',{
+                        xaxis: {
+                            range: [cnt-500,cnt]
+                        }
+                    });
+                }
+                console.log(val);
+            };
+        
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+            
+            
+            // setInterval(function(){
+            //     chatSocket.send(JSON.stringify({
+            //             'message': "Patil"
+            //         }));
+                    
+            //     console.log("Sent");
+                
+            // },2000);
+                
+            });
+            
+            
+            // function getData() {
+                
+            //      $.ajax({
+
+            //             'url' : 'http://voicebunny.comeze.com/index.php',
+            //             'type' : 'GET',
+            //             'success' : function(data) {              
+            //                 //prev=curr;
+            //                 curr=data['val'];
+            //             }
+            //         });
+                    
+            //     return curr;
+            // }
+            
+            
+            
+            // var cnt = 0;
+            // setInterval(function(){
+            //     Plotly.extendTraces('chart',{ y:[[getData()]]}, [0]);
+            //     cnt++;
+            //     if(cnt > 500) {
+            //         Plotly.relayout('chart',{
+            //             xaxis: {
+            //                 range: [cnt-500,cnt]
+            //             }
+            //         });
+            //     }
+            // },3000);
+        </script>
+    </div>
+    </body>
+</html>
