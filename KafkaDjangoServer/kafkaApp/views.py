@@ -71,10 +71,65 @@ class Increment:
         
 inc=Increment()
 
+class Distance:
+    def __init__(self,l1,l2):
+        self.lat=l1
+        self.long=l2
+        
+dist=Distance(12.313237,76.613519)
+
+from math import cos, asin, sqrt
+
+def distance(lat1, lon1, lat2, lon2):
+    p = 0.017453292519943295
+    a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
+    return 12742 * asin(sqrt(a))
+    
+def sendEmail(st):
+    
+    try:
+        import smtplib 
+        s = smtplib.SMTP('smtp.gmail.com', 587) 
+        s.starttls() 
+        s.login("Abhishekspatil92@gmail.com", open("/home/ubuntu/environment/KafkaDjangoServer/kafkaApp/password.txt", "r").read()) 
+        s.sendmail("Abhishekspatil92@gmail.com", "spbharath96@yahoo.com", st)
+        s.quit()
+        
+        print("Sent Email")
+    except Exception:
+        print("Some Error Happened Sending Email.. Try again or Contact Patil92")
+    
+    
+class SendEmailCheck():
+    def __init__(self):
+        self.FlagSendEmail=True
+
+flagemail=SendEmailCheck()
+
 def rand(req):
     
     #r=random.randint(0,1000000)
+    from firebase import firebase
+    firebase = firebase.FirebaseApplication('https://saving-9f42a.firebaseio.com/', None)
+    result = firebase.get('/Apart/Users/user1/location', None)
+    #print(result['latitude'],result['longitude'])
+    inc.i +=1
     
+    di=distance(result['latitude'],result['longitude'],dist.lat,dist.long)
+    
+    if di<10:
+        if flagemail.FlagSendEmail:
+            sendEmail("Welcomes to Patil's World..!! /n/n Vehicle is Nearer to Manasagangotri Police Station")
+            flagemail.FlagSendEmail= False
+        else:
+            print("Email Already Sent waiting For Ack..!!")
+        
+    print("Distance In Km : ",di)
+    
+    return JsonResponse({"lat":result['latitude'],"long":result['longitude'],"inc":inc.i})
+    #{'1': 'John Doe', '2': 'Jane Doe'}
+    
+    '''
     import json
     
     with open('/home/ubuntu/environment/KafkaDjangoServer/kafkaApp/points.json') as f:
@@ -90,7 +145,7 @@ def rand(req):
     
     print(inc.i)
     
-    '''
+    
     
     from kafka import KafkaConsumer
     import json
@@ -105,10 +160,10 @@ def rand(req):
     
     for mess in consumer:
         print(mess.value)
-    '''
-        
-    return JsonResponse({"lat":lat,"long":long,"inc":inc.i})
     
+    
+    return JsonResponse({"lat":lat,"long":long,"inc":inc.i})
+    '''
     
     #return JsonResponse({"val":r})
     

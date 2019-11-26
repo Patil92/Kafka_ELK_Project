@@ -7,12 +7,12 @@ producer=KafkaProducer(bootstrap_servers="localhost:9092",value_serializer=lambd
 i=0
 while True:
     
-    # prod=input("Enter Producer...")
-    # news=input("Enter TECH Updates : ")
-    k=str(i)+str(i)+str(i)
+    prod=input("Enter Producer...")
+    news=input("Enter TECH Updates : ")
+    #k=str(i)+str(i)+str(i)
     data={
         "Name":"Patil92",
-        "NEWS":k,
+        "NEWS":news,
         "Count": i
     }
     
