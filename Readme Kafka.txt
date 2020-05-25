@@ -40,19 +40,3 @@ ELK STACK
 To Know Physical and Virtual memory of Ubuntu
 - https://askubuntu.com/questions/898941/how-to-check-ram-size
 
-
-GitHub Pushing Data
- 
- - create a new repository on the command line
-    echo "# Kafka_ELK_Project" >> README.md
-    git init
-    git add README.md
-    git commit -m "first commit"
-    git remote add origin https://github.com/Patil92/Kafka_ELK_Project.git
-    git push -u origin master
-
- - push an existing repository from the command line
-    git remote add origin https://github.com/Patil92/Kafka_ELK_Project.git
-    git push -u origin master
-
-
